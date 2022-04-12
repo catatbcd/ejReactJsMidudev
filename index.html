@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Static Template</title>
+    <style>
+      picture {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        width: 100px;
+      }
+      picture.is-small {
+        width: 50px;
+      }
+      picture.is-large {
+        width: 150px;
+      }
+      img {
+        box-shadow: 0 0 15px #000;
+        border-radius: 50%;
+        width: 100%;
+      }
+      img.disabled {
+        opacity: 0.3;
+      }
+    </style>
+    <!-- Nota: cuando se despliegue, reemplazar "development.js" con "production.min.js". -->
+    <script
+      src="https://unpkg.com/react@18/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  </head>
+  <body>
+    <h1>With React JS and Babel</h1>
+    <div id="appBabel"></div>
+    <h1>Women in Tech</h1>
+    <div id="app"></div>
+    <h1>With React JS</h1>
+    <div id="appReact"></div>
+
+    <script type="text/babel">
+      const $appB = document.getElementById("appBabel");
+      const useState = React.useState;
+
+      const AvatarB = ({ id, name = "User", size }) => {
+        const [enabled, setEnabled] = useState(true);
+        //if (!id)
+        //return <img src="https://randomuser.me/api/portraits/lego/0.jpg" />;
+
+        const src = `https://randomuser.me/api/portraits/women/${id}.jpg`;
+
+        const imgClassName = enabled ? "" : "disabled";
+        //const pictureClassName = props.size === "small" ? "is-small" : "";
+        let pictureClassName = "";
+        if (size === "small") {
+          pictureClassName = "is-small";
+        } else if (size === "large") {
+          pictureClassName = "is-large";
+        }
+
+        return (
+          <picture className={pictureClassName}>
+            {id ? (
+              <img
+                onClick={() => setEnabled(!enabled)}
+                className={imgClassName}
+                src={src}
+              />
+            ) : (
+              <img
+                className="disabled"
+                src="https://randomuser.me/api/portraits/lego/0.jpg"
+              />
+            )}
+            <strong>{name}</strong>
+          </picture>
+        );
+      };
+
+      ReactDOM.render(
+        <div>
+          <AvatarB id={12} name="Ana" size="small" />
+          <AvatarB id={40} />
+          <AvatarB name="Anne" />
+          <AvatarB id={26} name="Maria" size="large" />
+        </div>,
+        $appB
+      );
+    </script>
+    <script>
+      const $app = document.getElementById("app");
+      const $appR = document.getElementById("appReact");
+      const h = React.createElement;
+      const AvatarR = (params) => {
+        const src = `https://randomuser.me/api/portraits/women/${params.id}.jpg`;
+        return h("img", { src });
+      };
+      /*onClick={(event) => {
+                event.target.classList.toggle("disabled");
+              }}*/
+      ReactDOM.render(h(AvatarR, { id: 1 }), $appR);
+      const Avatar = (params) => {
+        const src = `https://randomuser.me/api/portraits/women/${params.id}.jpg`;
+        return `
+        <picture>
+          <img src="${src}" />
+          <em>${params.name}</em>
+        </picture>
+        `;
+      };
+      $app.innerHTML += Avatar({ id: 20, name: "Andrea" });
+      $app.innerHTML += Avatar({ id: 8, name: "Manuela" });
+
+      $app.querySelectorAll("img").forEach((img) => {
+        img.addEventListener("click", () => {
+          img.classList.toggle("disabled");
+        });
+      });
+    </script>
+  </body>
+</html>
